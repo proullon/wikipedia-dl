@@ -1,0 +1,5 @@
+CRDB_HOST=db.example.com
+DB_MAX_CONN=300
+FOLDER=./wikipedia
+LANGUAGE=en
+DB_NAME=wikipedia
