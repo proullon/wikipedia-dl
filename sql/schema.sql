@@ -32,3 +32,7 @@ CREATE TABLE IF NOT EXISTS article_reference (page_id INT, refered_page INT, occ
 /* incoming_reference index allows querying incoming reference for a given article
 */
 CREATE INDEX IF NOT EXISTS incoming_reference ON article_reference (refered_page);
+
+/* page_nature table contains page content nature (place, person, ...) and infox box template if present
+*/
+CREATE TABLE IF NOT EXISTS page_nature (page_id INT PRIMARY KEY, nature INT, infobox TEXT);
