@@ -100,7 +100,13 @@ func (i *Inserter) Import(d *reader.Dump) chan error {
 
 func (i *Inserter) Insert(payload interface{}) (interface{}, error) {
 	p := payload.(reader.Page)
-	return true, i.insert(p)
+	err := i.insert(p)
+	if err != nil {
+		// punishment
+		time.Sleep(1 * time.Second)
+	}
+
+	return true, err
 }
 
 func (i *Inserter) insert(p reader.Page) error {
