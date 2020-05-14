@@ -5,4 +5,9 @@
 * https://dumps.wikimedia.org/enwiki/latest/
 * https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/
 
+## Binary requirements
+
+* wget
+* bzip2
+
 ## Parameters

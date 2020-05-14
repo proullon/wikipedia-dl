@@ -44,3 +44,6 @@ run.tight: ## run importer on target defined in .dev.conf
 					--interactive \
 					--with-page-references \
 					--with-page-content
+
+package:
+	docker build -t proullon/wikipediatocrdb:latest .
