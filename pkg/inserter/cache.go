@@ -24,6 +24,12 @@ func Cached() int {
 	return n
 }
 
+func Cache(title string, id int) {
+	indexm.Lock()
+	PageIndex[title] = id
+	indexm.Unlock()
+}
+
 func GetPage(db *sql.DB, title string) (int, error) {
 	title = strings.ToLower(title)
 

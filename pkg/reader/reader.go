@@ -8,6 +8,8 @@ import (
 	"os"
 	"path"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type Dump struct {
@@ -86,4 +88,47 @@ func ReadDump(filename string) (*Dump, error) {
 	}
 
 	return d, nil
+}
+
+func StreamDumpPages(filename string) (*SiteInfo, chan Page, error) {
+	fmt.Printf("Reading %s\n", filename)
+
+	f, err := os.Open(filename)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	decoder := xml.NewDecoder(f)
+
+	_, err = decoder.Token()
+	if err != nil {
+		return nil, nil, fmt.Errorf("xml.Token: %s", err)
+	}
+
+	si := &SiteInfo{}
+	err = decoder.Decode(si)
+	if err != nil {
+		return nil, nil, fmt.Errorf("xml.DecodeElement(siteinfo): %s", err)
+	}
+
+	pchan := make(chan Page, 10)
+
+	go func() {
+		defer close(pchan)
+		defer f.Close()
+
+		for {
+
+			p := Page{}
+			err = decoder.Decode(&p)
+			if err != nil {
+				log.Infof("DecodeElement: %d", err)
+				return
+			}
+
+			pchan <- p
+		}
+	}()
+
+	return si, pchan, nil
 }

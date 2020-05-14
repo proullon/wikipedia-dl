@@ -29,16 +29,17 @@ func Import(db *sql.DB, basefolder string, parallelisationFactor int, tightmode 
 		p := path.Join(basefolder, dumpName)
 		fmt.Printf("Opening %s\n", p)
 		begin := time.Now()
-		d, err := reader.ReadDump(p)
+
+		si, pagech, err := reader.StreamDumpPages(p)
 		if err != nil {
 			return err
 		}
 
-		fmt.Printf("Inserting dump %s: %+v (%d pages) (loading took %s)\n", dumpName, d.Info, len(d.Pages), time.Since(begin))
+		fmt.Printf("Inserting dump %s: %+v (opening took %s)\n", dumpName, si, time.Since(begin))
 		begin = time.Now()
 		i := inserter.New(db, parallelisationFactor, withPageContent, withPageReferences)
 
-		errch := i.Import(d)
+		errch := i.ImportStream(pagech)
 		var errc int
 		for err := range errch {
 			log.Errorf("%s: %s", dumpName, err)

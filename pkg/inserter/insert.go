@@ -36,9 +36,65 @@ func New(db *sql.DB, n int, insertPageContent bool, insertPageReferences bool) *
 	i.wp, _ = workerpool.New(i.Insert,
 		workerpool.WithRetry(15),
 		workerpool.WithMaxWorker(n),
+		workerpool.WithMaxQueue(10000),
 		workerpool.WithSizePercentil(workerpool.AllSizesPercentil),
 	)
 	return i
+}
+
+func (i *Inserter) ImportStream(pagech chan reader.Page) chan error {
+
+	if i.insertPageReferences {
+		if PageIndex == nil {
+			PageIndex = make(map[string]int)
+		}
+	}
+
+	go func() {
+		for p := range pagech {
+			Cache(parser.Cleanup(p.Title), p.ID)
+			i.wp.Feed(p)
+		}
+		i.wp.Wait()
+		i.wp.Stop()
+
+		v := i.wp.VelocityValues()
+		fmt.Printf("Velocity:\n")
+		for i := 1; i <= 100; i++ {
+			velocity, ok := v[i]
+			if !ok {
+				continue
+			}
+			fmt.Printf("%d%% : %fop/s\n", i, velocity)
+		}
+
+		percentil, ops := i.wp.CurrentVelocityValues()
+		fmt.Printf("Current velocity: %d%% -> %f op/s\n", percentil, ops)
+	}()
+
+	go func() {
+		for r := range i.wp.Responses() {
+			i.done++
+			if r.Err != nil {
+				i.errors++
+				i.errch <- r.Err
+			}
+		}
+		close(i.errch)
+	}()
+
+	go func() {
+		for {
+			if i.wp.Status() == workerpool.Stopped {
+				return
+			}
+			time.Sleep(10 * time.Second)
+			percentil, ops := i.wp.CurrentVelocityValues()
+			log.Infof("%d articles done (%d errors). Current velocity %d%% (%f op/s) (%d cached, %d hits)\n", i.done, i.errors, percentil, ops, Cached(), hit)
+		}
+	}()
+
+	return i.errch
 }
 
 func (i *Inserter) Import(d *reader.Dump) chan error {

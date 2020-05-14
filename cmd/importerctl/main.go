@@ -99,7 +99,7 @@ func main() {
 	app.Action = start
 	err := app.Run(os.Args)
 	if err != nil {
-		log.Error(err)
+		fmt.Printf("Fatal error: %s", err)
 	}
 }
 

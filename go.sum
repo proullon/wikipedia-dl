@@ -24,6 +24,8 @@ github.com/proullon/workerpool v0.0.0-20200429190315-8cc98e318cde h1:/uV0EkxwA6b
 github.com/proullon/workerpool v0.0.0-20200429190315-8cc98e318cde/go.mod h1:qrxuCudeDygzaSXNrFrp7srvH4elCRFoEgo+WTbOukM=
 github.com/proullon/workerpool v0.0.0-20200513181139-bc6352cd006a h1:a3fn76iCe8Y3nFxUr6tRsHYM3k5lLBIYrAcCk1g2aUQ=
 github.com/proullon/workerpool v0.0.0-20200513181139-bc6352cd006a/go.mod h1:qrxuCudeDygzaSXNrFrp7srvH4elCRFoEgo+WTbOukM=
+github.com/proullon/workerpool v0.0.0-20200514132344-3e091d52d168 h1:Zzh1IXBaqFkQy4kT2B610fYMhpNOkNAeIWFEPKVbU4Q=
+github.com/proullon/workerpool v0.0.0-20200514132344-3e091d52d168/go.mod h1:qrxuCudeDygzaSXNrFrp7srvH4elCRFoEgo+WTbOukM=
 github.com/russross/blackfriday/v2 v2.0.1 h1:lPqVAte+HuHNfhJ/0LC98ESWRz8afy9tM/0RK8m9o+Q=
 github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/shurcooL/sanitized_anchor_name v1.0.0 h1:PdmoCO6wvbs+7yrJyMORt4/BmY5IYyJwS/kOiWx8mHo=
