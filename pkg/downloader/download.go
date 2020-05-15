@@ -21,9 +21,9 @@ const (
 )
 
 func DownloadDumps(basefolder string, lang string, files []string) (chan string, error) {
-	// Size 2 to throttle download to inserter use, only downloading the next dump so insert never wait
+	// Size 1 to throttle download to inserter use, only downloading the next dump so insert never wait
 	// this way, in tight mode, only 2 dump will be on disk at any given time
-	filech := make(chan string, 2)
+	filech := make(chan string, 1)
 
 	fmt.Printf("Using %d dump files:\n", len(files))
 	for _, filename := range files {

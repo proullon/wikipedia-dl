@@ -36,7 +36,7 @@ func New(db *sql.DB, n int, insertPageContent bool, insertPageReferences bool) *
 	i.wp, _ = workerpool.New(i.Insert,
 		workerpool.WithRetry(15),
 		workerpool.WithMaxWorker(n),
-		workerpool.WithMaxQueue(10000),
+		workerpool.WithMaxQueue(1000),
 		workerpool.WithSizePercentil(workerpool.AllSizesPercentil),
 	)
 	return i
