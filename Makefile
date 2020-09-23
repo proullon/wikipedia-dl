@@ -23,6 +23,13 @@ run.full: ## run importer on target defined in .dev.conf
 					--with-page-references \
 					--with-page-content
 
+run.content: ## run importer on target defined in .dev.conf
+	rm -f /tmp/wikipediatocrdb.log
+	importerctl --host=$(CRDB_HOST) --db-max-conn=$(DB_MAX_CONN) --dump-folder=$(FOLDER) --dbname=$(DB_NAME) \
+					--language=$(LANGUAGE) \
+					--interactive \
+					--with-page-content
+
 run.light: ## run importer on target defined in .dev.conf
 	rm -f /tmp/wikipediatocrdb.log
 	importerctl --host=$(CRDB_HOST) --db-max-conn=$(DB_MAX_CONN) --dump-folder=$(FOLDER) --dbname=$(DB_NAME) \
