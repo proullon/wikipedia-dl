@@ -2,7 +2,7 @@
 
 This is an utilitary tool to import any Wikipedia language into your CockroachDB cluster.
 
-To avoid hammering your cluster, wikipediatocrdb used (workerpool)[https://github.com/proullon/workerpool] to adapt parallelisation in light of insert speed.
+To avoid hammering your cluster, wikipediatocrdb used [workerpool](https://github.com/proullon/workerpool) to adapt parallelisation in light of insert speed.
 
 # .dev.conf
 
