@@ -8,6 +8,7 @@ import (
 )
 
 type Reference struct {
+	ID        int
 	Title     string
 	Occurence int
 	Index     int
@@ -50,23 +51,24 @@ func PageReferences(p *reader.Page) map[string]*Reference {
 		c = c[:i]
 	}
 
+	// TODO: should be in config
+	var ignoredPrefixes = []string{
+		"wikipedia", "template", "project", "portal", "category", "draft", "module", "list",
+		"wikipédia", "modèle", "projet", "portail", "catégorie", "ébauche", "module", "liste",
+	}
+
 	re := regexp.MustCompile(`\[\[.(.*?)\]\]`)
 	sub := re.FindAllString(c, -1)
 
 	var index int
 	references := make(map[string]*Reference)
 	for _, s := range sub {
-		if strings.Contains(s, "File:") || strings.Contains(s, "Fichier:") {
-			continue
-		}
-		if strings.Contains(s, "Category:") {
-			continue
-		}
-		if strings.Contains(s, "Image:") {
-			continue
-		}
-		if strings.Contains(strings.ToLower(s), "list") {
-			continue
+
+		// do not insert wikipedia meta page
+		for _, prefix := range ignoredPrefixes {
+			if strings.HasPrefix(strings.ToLower(s), prefix+":") {
+				continue
+			}
 		}
 
 		s = Cleanup(s)

@@ -104,6 +104,20 @@ func (i *Inserter) Insert(payload interface{}) (interface{}, error) {
 func (i *Inserter) insert(p reader.Page) error {
 	var err error
 
+	// TODO: should be in config
+	var ignoredPrefixes = []string{
+		"wikipedia", "template", "project", "portal", "category", "draft", "module",
+		"wikipédia", "modèle", "projet", "portail", "catégorie", "draft", "module",
+	}
+
+	// do not insert wikipedia meta page
+	for _, prefix := range ignoredPrefixes {
+		if strings.HasPrefix(strings.ToLower(p.Title), prefix+":") {
+			log.Infof("Ignoring %s", p.Title)
+			return nil
+		}
+	}
+
 	tx, err := i.db.Begin()
 	if err != nil {
 		return fmt.Errorf("Inserting %s (%d): Begin : %s", p.Title, p.ID, err)
@@ -182,6 +196,7 @@ func insertPageReferences(db *sql.DB, tx *sql.Tx, p *reader.Page) error {
 	var refID int
 	var first bool = true
 	query = `INSERT INTO article_reference (page_id, refered_page, occurrence, reference_index) VALUES `
+	existingReferences := make(map[int]*parser.Reference)
 	for _, ref := range references {
 		r := ref.Title
 
@@ -194,11 +209,22 @@ func insertPageReferences(db *sql.DB, tx *sql.Tx, p *reader.Page) error {
 			continue
 		}
 
+		eref, ok := existingReferences[refID]
+		if ok {
+			eref.Occurence += ref.Occurence
+		} else {
+			ref.ID = refID
+			existingReferences[refID] = ref
+		}
+
+	}
+
+	for _, ref := range existingReferences {
 		if first {
-			query = fmt.Sprintf("%s (%d, %d, %d, %d) ", query, p.ID, refID, ref.Occurence, ref.Index)
+			query = fmt.Sprintf("%s (%d, %d, %d, %d) ", query, p.ID, ref.ID, ref.Occurence, ref.Index)
 			first = false
 		} else {
-			query = fmt.Sprintf("%s, (%d, %d, %d, %d) ", query, p.ID, refID, ref.Occurence, ref.Index)
+			query = fmt.Sprintf("%s, (%d, %d, %d, %d) ", query, p.ID, ref.ID, ref.Occurence, ref.Index)
 		}
 	}
 
@@ -209,7 +235,7 @@ func insertPageReferences(db *sql.DB, tx *sql.Tx, p *reader.Page) error {
 
 	_, err = tx.Exec(query)
 	if err != nil {
-		return fmt.Errorf("%s: %s", p.Title, err)
+		return fmt.Errorf("%s: || %s || %s", p.Title, query, err)
 	}
 
 	return nil
