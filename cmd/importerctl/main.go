@@ -130,7 +130,7 @@ func start(c *cli.Context) error {
 		return err
 	}
 	db.SetMaxOpenConns(c.Int("db-max-conn"))
-	db.SetMaxIdleConns(c.Int("db-max-conn"))
+	db.SetMaxIdleConns(0)
 	fmt.Printf("Connected to %s/%s\n", host, dbname)
 
 	f, err := os.OpenFile(c.String("logfile"), os.O_WRONLY|os.O_CREATE, 0755)
