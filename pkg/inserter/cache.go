@@ -6,14 +6,14 @@ import (
 	"sync"
 )
 
-// we could use redis, but a MAP is enough
+// we could use redis, but a good ol' map is good enough...
 var (
 	PageIndex map[string]int
 	indexm    sync.Mutex
 	hit       int
 )
 
-func initialize() {
+func init() {
 	PageIndex = make(map[string]int)
 }
 

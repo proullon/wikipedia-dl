@@ -122,7 +122,7 @@ func StreamDumpPages(filename string) (*SiteInfo, chan Page, error) {
 			p := Page{}
 			err = decoder.Decode(&p)
 			if err != nil {
-				log.Infof("DecodeElement: %d", err)
+				log.Infof("Done reading %s: %s", filename, err)
 				return
 			}
 
