@@ -4,7 +4,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path"
 	"strings"
@@ -39,7 +38,7 @@ func New(dirname string) (*Reader, error) {
 		dirname: dirname,
 	}
 
-	files, err := ioutil.ReadDir(dirname)
+	files, err := os.ReadDir(dirname)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +75,7 @@ func ReadDump(filename string) (*Dump, error) {
 	}
 	defer f.Close()
 
-	data, err := ioutil.ReadAll(f)
+	data, err := io.ReadAll(f)
 	if err != nil {
 		return nil, err
 	}

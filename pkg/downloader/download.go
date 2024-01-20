@@ -174,8 +174,6 @@ func ListArticleDumps(interactive bool, lang string) ([]string, error) {
 
 		}
 	}
-
-	return urls, nil
 }
 
 func getHref(t html.Token) (ok bool, href string) {

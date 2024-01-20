@@ -124,7 +124,7 @@ func (i *Inserter) insert(p reader.Page) error {
 	}
 	defer func() {
 		if err != nil {
-			tx.Rollback()
+			_ = tx.Rollback()
 		}
 	}()
 
@@ -229,7 +229,7 @@ func insertPageReferences(db *sql.DB, tx *sql.Tx, p *reader.Page) error {
 	}
 
 	// first is true so all GetPage failed :(
-	if first == true {
+	if first {
 		return nil
 	}
 
